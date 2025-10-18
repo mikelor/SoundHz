@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SoundHz.SoundBoard.Views.EditSoundPage"
+             Title="Sound Details">
+    <ScrollView>
+        <VerticalStackLayout Spacing="16" Padding="24">
+            <Entry Text="{Binding Name}" Placeholder="Name" />
+            <Editor Text="{Binding Description}" Placeholder="Description" AutoSize="TextChanges" />
+            <Entry Text="{Binding FilePath}" Placeholder="File path" IsReadOnly="True" />
+            <Button Text="Select File" Command="{Binding PickFileCommand}" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Text="Add" Command="{Binding SaveCommand}" Grid.Column="0" />
+                <Button Text="Cancel" Command="{Binding CancelCommand}" Grid.Column="1" />
+            </Grid>
+            <Button Text="Delete"
+                    Command="{Binding DeleteCommand}"
+                    IsVisible="{Binding CanDelete}"
+                    TextColor="White"
+                    BackgroundColor="Red"
+                    CornerRadius="12" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
