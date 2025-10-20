@@ -1,16 +1,21 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.ApplicationModel;
+using SoundHz.ViewModels.Messages;
 
 namespace SoundHz.ViewModels;
 
 /// <summary>
 /// Provides the presentation logic for displaying and persisting sound boards.
 /// </summary>
-public partial class SoundBoardsViewModel(ISoundBoardStorageService storageService, ILogger<SoundBoardsViewModel> logger) : BaseViewModel
+public partial class SoundBoardsViewModel(ISoundBoardStorageService storageService, ILogger<SoundBoardsViewModel> logger, IMessenger? messenger = null) : BaseViewModel
 {
     private readonly ISoundBoardStorageService storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
     private readonly ILogger<SoundBoardsViewModel> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly IMessenger messageHub = messenger ?? WeakReferenceMessenger.Default;
+    private bool isRegisteredWithMessenger;
 
     /// <summary>
     /// Gets or sets the collection of sound boards displayed in the user interface.
@@ -66,6 +71,8 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
             logger.LogError(ex, "Failed to load sound boards from storage.");
             throw;
         }
+
+        EnsureMessengerRegistration();
     }
 
     /// <summary>
@@ -81,6 +88,16 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
         {
             { "Item", soundBoard }
         });
+    }
+
+    /// <summary>
+    /// Navigates to the sound board creation page.
+    /// </summary>
+    [RelayCommand]
+    private async Task AddNewSoundBoardAsync()
+    {
+        EnsureMessengerRegistration();
+        await Shell.Current.GoToAsync(nameof(SoundBoardDetailEntryPage), true).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -185,5 +202,40 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
         {
             logger.LogError(ex, "Failed to persist sound board changes.");
         }
+    }
+
+    private void OnSoundBoardAdded(SoundBoardAddedMessage message)
+    {
+        ArgumentNullException.ThrowIfNull(message);
+
+        void ApplyAddition()
+        {
+            if (Items is null)
+            {
+                Items = new ObservableCollection<SoundBoard>();
+            }
+
+            Items.Add(new SoundBoard(message.Value));
+        }
+
+        if (MainThread.IsMainThread)
+        {
+            ApplyAddition();
+        }
+        else
+        {
+            MainThread.BeginInvokeOnMainThread(ApplyAddition);
+        }
+    }
+
+    private void EnsureMessengerRegistration()
+    {
+        if (isRegisteredWithMessenger)
+        {
+            return;
+        }
+
+        messageHub.Register<SoundBoardsViewModel, SoundBoardAddedMessage>(this, static (recipient, message) => recipient.OnSoundBoardAdded(message));
+        isRegisteredWithMessenger = true;
     }
 }

@@ -29,8 +29,10 @@ public static class MauiProgram
                 builder.Services.AddSingleton<IFileSystem>(_ => FileSystem.Current);
                 builder.Services.AddSingleton<ISoundBoardStorageService, SoundBoardStorageService>();
                 builder.Services.AddTransient<SoundBoardsDetailViewModel>();
+                builder.Services.AddTransient<SoundBoardDetailEntryViewModel>();
                 builder.Services.AddSingleton<SoundBoardsViewModel>();
                 builder.Services.AddSingleton<AboutViewModel>();
+                builder.Services.AddTransient<SoundBoardDetailEntryPage>();
 
                 return builder.Build();
         }
