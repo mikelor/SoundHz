@@ -1,16 +1,28 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using CommunityToolkit.Mvvm.Messaging;
+using SoundHz.Messaging;
 
 namespace SoundHz.ViewModels;
 
 /// <summary>
 /// Provides the presentation logic for displaying and persisting sound boards.
 /// </summary>
-public partial class SoundBoardsViewModel(ISoundBoardStorageService storageService, ILogger<SoundBoardsViewModel> logger) : BaseViewModel
+public partial class SoundBoardsViewModel(ISoundBoardStorageService storageService, ILogger<SoundBoardsViewModel> logger, IWeakReferenceMessenger messenger) : BaseViewModel
 {
     private readonly ISoundBoardStorageService storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
     private readonly ILogger<SoundBoardsViewModel> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly IWeakReferenceMessenger messenger = messenger ?? throw new ArgumentNullException(nameof(messenger));
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SoundBoardsViewModel"/> class.
+    /// </summary>
+    public SoundBoardsViewModel
+    {
+        this.messenger.Register<SoundBoardsViewModel, SoundBoardAddedMessage>(this, static (recipient, message) => recipient.OnSoundBoardAdded(message.Value));
+    }
 
     /// <summary>
     /// Gets or sets the collection of sound boards displayed in the user interface.
@@ -105,6 +117,17 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
         }
     }
 
+    /// <summary>
+    /// Navigates to the page for creating a new sound board.
+    /// </summary>
+    [RelayCommand]
+    private Task GoToCreateSoundBoardAsync()
+    {
+        return Shell.Current is null
+            ? Task.CompletedTask
+            : Shell.Current.GoToAsync(nameof(SoundBoardDetailsEntryPage));
+    }
+
     private void SubscribeToCollection(ObservableCollection<SoundBoard> collection)
     {
         collection.CollectionChanged += OnItemsCollectionChanged;
@@ -185,5 +208,22 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
         {
             logger.LogError(ex, "Failed to persist sound board changes.");
         }
+    }
+
+    private void OnSoundBoardAdded(SoundBoard soundBoard)
+    {
+        ArgumentNullException.ThrowIfNull(soundBoard);
+
+        if (Items is null)
+        {
+            Items = new ObservableCollection<SoundBoard>();
+        }
+
+        if (Items.Any(existing => string.Equals(existing.Title, soundBoard.Title, StringComparison.OrdinalIgnoreCase)))
+        {
+            return;
+        }
+
+        Items.Add(new SoundBoard(soundBoard));
     }
 }
