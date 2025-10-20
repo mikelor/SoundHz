@@ -40,7 +40,6 @@
                                 <Button
                                         Grid.Column="1"
                                         Command="{Binding AddCommand}"
-                                        IsEnabled="{Binding Source={RelativeSource Self}, Path=Command.CanExecute}"
                                         Text="Add" />
                         </Grid>
                 </VerticalStackLayout>
