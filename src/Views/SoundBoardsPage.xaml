@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="SoundHz.Views.SoundBoardsPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	xmlns:m="clr-namespace:SoundHz.Models"
+	xmlns:vm="clr-namespace:SoundHz.ViewModels"
+	x:DataType="vm:SoundBoardsViewModel">
+	<RefreshView Command="{Binding RefreshingCommand}" IsRefreshing="{Binding IsRefreshing}">
+		<CollectionView
+			ItemsSource="{Binding Items}"
+			RemainingItemsThreshold="10"
+			RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="m:SampleItem">
+					<Border
+						Margin="4"
+						Padding="12"
+						BackgroundColor="{AppThemeBinding Light={StaticResource White},
+						                                  Dark={StaticResource Black}}"
+						SemanticProperties.Description="{Binding Title}"
+						StrokeShape="RoundRectangle 8">
+						<Border.GestureRecognizers>
+							<TapGestureRecognizer
+								Command="{Binding x:DataType=vm:SoundBoardsViewModel, Source={RelativeSource AncestorType={x:Type vm:SoundBoardsViewModel}}, Path=GoToDetailsCommand}"
+								CommandParameter="{Binding Source={RelativeSource AncestorType={x:Type m:SampleItem}}, Path=.}" />
+						</Border.GestureRecognizers>
+						<Label
+							FontSize="Large"
+							Text="{Binding Title}"
+							TextColor="{AppThemeBinding Light={StaticResource Primary},
+							                            Dark={StaticResource Gray100}}" />
+					</Border>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+		</CollectionView>
+	</RefreshView>
+</ContentPage>
