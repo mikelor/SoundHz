@@ -6,14 +6,6 @@
         xmlns:m="clr-namespace:SoundHz.Models"
         xmlns:vm="clr-namespace:SoundHz.ViewModels"
         x:DataType="vm:SoundBoardsViewModel">
-        <ContentPage.ToolbarItems>
-                <ToolbarItem
-                        Command="{Binding ShowAddNewCommand}"
-                        Order="Primary"
-                        Priority="0"
-                        Text="Add New SoundBoard..." />
-        </ContentPage.ToolbarItems>
-
         <Grid>
                 <RefreshView
                         Command="{Binding RefreshingCommand}"
@@ -49,28 +41,6 @@
                                         </Border>
                                 </DataTemplate>
                         </CollectionView.ItemTemplate>
-                                <CollectionView.Footer>
-                                        <Border
-                                                Margin="4"
-                                                Padding="12"
-                                                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
-                                                StrokeShape="RoundRectangle 8">
-                                                <Border.GestureRecognizers>
-                                                        <TapGestureRecognizer Command="{Binding ShowAddNewCommand}" />
-                                                </Border.GestureRecognizers>
-                                                <VerticalStackLayout>
-                                                        <Label
-                                                                FontSize="Large"
-                                                                Text="Add New Soundboard..."
-                                                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
-                                                        <Label
-                                                                FontSize="Small"
-                                                                Text="Adds a new SoundBoard To the List."
-                                                                TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}"
-                                                                LineBreakMode="WordWrap" />
-                                                </VerticalStackLayout>
-                                        </Border>
-                                </CollectionView.Footer>
                         </CollectionView>
                 </RefreshView>
 

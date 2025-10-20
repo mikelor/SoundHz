@@ -7,24 +7,16 @@
         xmlns:views="clr-namespace:SoundHz.Views"
         Title="SoundHz">
 
-        <TabBar>
-                <ShellContent
-                        Shell.NavBarIsVisible="true"
-                        Title="SoundBoards"
-                        Icon="iconlistdetail.png"
-                        ContentTemplate="{DataTemplate views:SoundBoardsPage}"
-                        Route="SoundBoardsPage" />
-                <ShellContent
-                        Shell.NavBarIsVisible="true"
-                        Title="Add New SoundBoard..."
-                        Icon="iconblank.png"
-                        ContentTemplate="{DataTemplate views:SoundBoardDetailEntryPage}"
-                        Route="SoundBoardDetailEntryPage" />
-                <ShellContent
-                        Shell.NavBarIsVisible="true"
-                        Title="About"
-                        Icon="iconblank.png"
-                        ContentTemplate="{DataTemplate views:AboutPage}"
-                        Route="AboutPage" />
-        </TabBar>
+        <ShellContent
+                Shell.NavBarIsVisible="true"
+                Title="SoundBoards"
+                Icon="iconlistdetail.png"
+                ContentTemplate="{DataTemplate views:SoundBoardsPage}"
+                Route="SoundBoardsPage" />
+        <ShellContent
+                Shell.NavBarIsVisible="true"
+                Title="About"
+                Icon="iconblank.png"
+                ContentTemplate="{DataTemplate views:AboutPage}"
+                Route="AboutPage" />
 </Shell>
