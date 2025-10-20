@@ -4,40 +4,99 @@
         xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
         xmlns:m="clr-namespace:SoundHz.Models"
+        xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
         xmlns:vm="clr-namespace:SoundHz.ViewModels"
-        x:DataType="vm:SoundBoardsViewModel">
-        <RefreshView Command="{Binding RefreshingCommand}" IsRefreshing="{Binding IsRefreshing}">
-                <CollectionView ItemsSource="{Binding Items}">
-                        <CollectionView.ItemTemplate>
-                                <DataTemplate x:DataType="m:SoundBoard">
-                                        <Border
-                                                Margin="4"
-                                                Padding="12"
-                                                BackgroundColor="{AppThemeBinding Light={StaticResource White},
-                                                                                  Dark={StaticResource Black}}"
-                                                SemanticProperties.Description="{Binding Title}"
-                                                StrokeShape="RoundRectangle 8">
-                                                <Border.GestureRecognizers>
-                                                        <TapGestureRecognizer
-                                                                Command="{Binding x:DataType=vm:SoundBoardsViewModel, Source={RelativeSource AncestorType={x:Type vm:SoundBoardsViewModel}}, Path=GoToDetailsCommand}"
-                                                                CommandParameter="{Binding Source={RelativeSource AncestorType={x:Type m:SoundBoard}}, Path=.}" />
-                                                </Border.GestureRecognizers>
-                                                <VerticalStackLayout>
-                                                        <Label
-                                                                FontSize="Large"
-                                                                Text="{Binding Title}"
-                                                                TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                                                    Dark={StaticResource Gray100}}" />
-                                                        <Label
-                                                                FontSize="Small"
-                                                                Text="{Binding Description}"
-                                                                TextColor="{AppThemeBinding Light={StaticResource Gray900},
-                                                                                    Dark={StaticResource Gray200}}"
-                                                                LineBreakMode="WordWrap" />
-                                                </VerticalStackLayout>
-                                        </Border>
-                                </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                </CollectionView>
-        </RefreshView>
+        x:DataType="vm:SoundBoardsViewModel"
+        Title="SoundBoards">
+        <ContentPage.ToolbarItems>
+                <ToolbarItem
+                        Text="Add New SoundBoard..."
+                        Order="Secondary"
+                        Command="{Binding AddNewSoundBoardCommand}" />
+        </ContentPage.ToolbarItems>
+        <Grid>
+                <toolkit:TabView
+                        x:Name="SoundBoardsTabView"
+                        TabStripPlacement="Bottom"
+                        SelectionChanged="OnTabSelectionChanged">
+                        <toolkit:TabViewItem Header="SoundBoards">
+                                <RefreshView Command="{Binding RefreshingCommand}" IsRefreshing="{Binding IsRefreshing}">
+                                        <CollectionView ItemsSource="{Binding Items}">
+                                                <CollectionView.ItemTemplate>
+                                                        <DataTemplate x:DataType="m:SoundBoard">
+                                                                <Border
+                                                                        Margin="4"
+                                                                        Padding="12"
+                                                                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
+                                                                        SemanticProperties.Description="{Binding Title}"
+                                                                        StrokeShape="RoundRectangle 8">
+                                                                        <Border.GestureRecognizers>
+                                                                                <TapGestureRecognizer
+                                                                                        Command="{Binding x:DataType=vm:SoundBoardsViewModel, Source={RelativeSource AncestorType={x:Type vm:SoundBoardsViewModel}}, Path=GoToDetailsCommand}"
+                                                                                        CommandParameter="{Binding Source={RelativeSource AncestorType={x:Type m:SoundBoard}}, Path=.}" />
+                                                                        </Border.GestureRecognizers>
+                                                                        <VerticalStackLayout>
+                                                                                <Label
+                                                                                        FontSize="Large"
+                                                                                        Text="{Binding Title}"
+                                                                                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
+                                                                                <Label
+                                                                                        FontSize="Small"
+                                                                                        Text="{Binding Description}"
+                                                                                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}"
+                                                                                        LineBreakMode="WordWrap" />
+                                                                        </VerticalStackLayout>
+                                                                </Border>
+                                                        </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                                <CollectionView.Footer>
+                                                        <Border
+                                                                Margin="4"
+                                                                Padding="12"
+                                                                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
+                                                                StrokeShape="RoundRectangle 8"
+                                                                SemanticProperties.Description="Add New SoundBoard">
+                                                                <Border.GestureRecognizers>
+                                                                        <TapGestureRecognizer Command="{Binding AddNewSoundBoardCommand}" />
+                                                                </Border.GestureRecognizers>
+                                                                <VerticalStackLayout>
+                                                                        <Label
+                                                                                FontSize="Large"
+                                                                                Text="Add New SoundBoard..."
+                                                                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
+                                                                        <Label
+                                                                                FontSize="Small"
+                                                                                Text="Adds a new SoundBoard To the List."
+                                                                                TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}"
+                                                                                LineBreakMode="WordWrap" />
+                                                                </VerticalStackLayout>
+                                                        </Border>
+                                                </CollectionView.Footer>
+                                        </CollectionView>
+                                </RefreshView>
+                        </toolkit:TabViewItem>
+                        <toolkit:TabViewItem Header="Add New SoundBoard...">
+                                <Grid>
+                                        <Label
+                                                Text="Selecting this tab will open the add new sound board experience."
+                                                HorizontalTextAlignment="Center"
+                                                VerticalTextAlignment="Center"
+                                                TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray200}}" />
+                                </Grid>
+                        </toolkit:TabViewItem>
+                </toolkit:TabView>
+                <Button
+                        WidthRequest="56"
+                        HeightRequest="56"
+                        CornerRadius="28"
+                        Text="+"
+                        FontSize="28"
+                        Command="{Binding AddNewSoundBoardCommand}"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        Margin="24"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}"
+                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                        SemanticProperties.Description="Add a new sound board" />
+        </Grid>
 </ContentPage>
