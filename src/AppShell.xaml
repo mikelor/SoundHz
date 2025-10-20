@@ -1,22 +1,30 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
-	x:Class="SoundHz.AppShell"
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:local="clr-namespace:SoundHz"
-	xmlns:views="clr-namespace:SoundHz.Views"
-	Title="SoundHz">
+        x:Class="SoundHz.AppShell"
+        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:local="clr-namespace:SoundHz"
+        xmlns:views="clr-namespace:SoundHz.Views"
+        Title="SoundHz">
 
-	<ShellContent
-		Shell.NavBarIsVisible="true"
-		Title="SoundBoards"
-		Icon="iconlistdetail.png"
-		ContentTemplate="{DataTemplate views:SoundBoardsPage}"
-		Route="SoundBoardsPage" />
-	<ShellContent
-		Shell.NavBarIsVisible="true"
-		Title="About"
-		Icon="iconblank.png"
-		ContentTemplate="{DataTemplate views:AboutPage}"
-		Route="AboutPage" />
+        <TabBar>
+                <ShellContent
+                        Shell.NavBarIsVisible="true"
+                        Title="SoundBoards"
+                        Icon="iconlistdetail.png"
+                        ContentTemplate="{DataTemplate views:SoundBoardsPage}"
+                        Route="SoundBoardsPage" />
+                <ShellContent
+                        Shell.NavBarIsVisible="true"
+                        Title="Add New SoundBoard..."
+                        Icon="iconblank.png"
+                        ContentTemplate="{DataTemplate views:SoundBoardDetailEntryPage}"
+                        Route="SoundBoardDetailEntryPage" />
+                <ShellContent
+                        Shell.NavBarIsVisible="true"
+                        Title="About"
+                        Icon="iconblank.png"
+                        ContentTemplate="{DataTemplate views:AboutPage}"
+                        Route="AboutPage" />
+        </TabBar>
 </Shell>

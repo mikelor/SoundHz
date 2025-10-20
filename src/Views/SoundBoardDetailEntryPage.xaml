@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+        x:Class="SoundHz.Views.SoundBoardDetailEntryPage"
+        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:vm="clr-namespace:SoundHz.ViewModels"
+        x:DataType="vm:SoundBoardDetailEntryViewModel"
+        Title="Add New SoundBoard">
+        <ScrollView>
+                <VerticalStackLayout Padding="24" Spacing="16">
+                        <VerticalStackLayout Spacing="4">
+                                <Label
+                                        FontAttributes="Bold"
+                                        Text="Title" />
+                                <Entry
+                                        Placeholder="Enter a descriptive title"
+                                        Text="{Binding Title}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="4">
+                                <Label
+                                        FontAttributes="Bold"
+                                        Text="Description" />
+                                <Editor
+                                        AutoSize="TextChanges"
+                                        Placeholder="Describe the new sound board"
+                                        Text="{Binding Description}" />
+                        </VerticalStackLayout>
+
+                        <Grid ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Button
+                                        Grid.Column="0"
+                                        Command="{Binding CancelCommand}"
+                                        Text="Cancel" />
+                                <Button
+                                        Grid.Column="1"
+                                        Command="{Binding AddCommand}"
+                                        IsEnabled="{Binding Source={RelativeSource Self}, Path=Command.CanExecute}"
+                                        Text="Add" />
+                        </Grid>
+                </VerticalStackLayout>
+        </ScrollView>
+</ContentPage>
