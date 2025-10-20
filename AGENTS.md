@@ -15,6 +15,7 @@ Your task is to ensure .NET/C# code in meets the best practices specific to this
 \## Modern 
 \- Use .NET 10 Framework and Language Features
 \- Use Latest Versions of Dotnet Packages including Pre Release Versions if available
+\- Use CommunityToolkit.Maui.MediaElement" Version="6.1.2" />
 
 
 \## Documentation \& Structure
