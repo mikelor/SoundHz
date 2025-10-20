@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 
 namespace SoundHz.ViewModels;
@@ -13,47 +12,43 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
     private readonly ISoundBoardStorageService storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
     private readonly ILogger<SoundBoardsViewModel> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
+    /// <summary>
+    /// Gets or sets the collection of sound boards displayed in the user interface.
+    /// </summary>
+    [ObservableProperty]
     private ObservableCollection<SoundBoard>? items;
-    private bool isRefreshing;
 
     /// <summary>
     /// Gets or sets a value indicating whether a refresh operation is currently in progress.
     /// </summary>
-    public bool IsRefreshing
-    {
-        get => isRefreshing;
-        set => SetProperty(ref isRefreshing, value);
-    }
+    [ObservableProperty]
+    private bool isRefreshing;
 
     /// <summary>
-    /// Gets the collection of sound boards displayed in the user interface.
+    /// Called prior to updating the <see cref="Items"/> collection so that change listeners can be detached.
     /// </summary>
-    public ObservableCollection<SoundBoard>? Items
+    /// <param name="value">The incoming collection instance.</param>
+    partial void OnItemsChanging(ObservableCollection<SoundBoard>? value)
     {
-        get => items;
-        private set
+        _ = value;
+
+        if (Items is not null)
         {
-            if (items == value)
-            {
-                return;
-            }
-
-            if (items is not null)
-            {
-                UnsubscribeFromCollection(items);
-            }
-
-            if (SetProperty(ref items, value) && value is not null)
-            {
-                SubscribeToCollection(value);
-            }
+            UnsubscribeFromCollection(Items);
         }
     }
 
     /// <summary>
-    /// Gets the command used to trigger a refresh of the sound board list.
+    /// Called after the <see cref="Items"/> collection has changed to attach listeners to the new instance.
     /// </summary>
-    public IAsyncRelayCommand RefreshingCommand => OnRefreshingCommand;
+    /// <param name="value">The new collection instance.</param>
+    partial void OnItemsChanged(ObservableCollection<SoundBoard>? value)
+    {
+        if (value is not null)
+        {
+            SubscribeToCollection(value);
+        }
+    }
 
     /// <summary>
     /// Loads sound boards from persistent storage and updates the bound collection.
@@ -63,7 +58,7 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
     {
         try
         {
-            var soundBoards = await storageService.GetSoundBoardsAsync(cancellationToken);
+            var soundBoards = await storageService.GetSoundBoardsAsync(cancellationToken).ConfigureAwait(false);
             Items = new ObservableCollection<SoundBoard>(soundBoards.Select(board => new SoundBoard(board)));
         }
         catch (Exception ex)
@@ -92,12 +87,12 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
     /// Refreshes the list of sound boards.
     /// </summary>
     [RelayCommand(AllowConcurrentExecutions = false)]
-    private async Task OnRefreshing()
+    private async Task RefreshingAsync()
     {
         try
         {
             IsRefreshing = true;
-            await LoadDataAsync();
+            await LoadDataAsync().ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -110,13 +105,8 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
         }
     }
 
-    private void SubscribeToCollection(ObservableCollection<SoundBoard>? collection)
+    private void SubscribeToCollection(ObservableCollection<SoundBoard> collection)
     {
-        if (collection is null)
-        {
-            return;
-        }
-
         collection.CollectionChanged += OnItemsCollectionChanged;
 
         foreach (var soundBoard in collection)
