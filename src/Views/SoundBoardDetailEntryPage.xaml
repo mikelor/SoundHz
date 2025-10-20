@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+        x:Class="SoundHz.Views.SoundBoardDetailEntryPage"
+        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:vm="clr-namespace:SoundHz.ViewModels"
+        x:DataType="vm:SoundBoardDetailEntryViewModel"
+        Title="Create SoundBoard">
+        <ScrollView>
+                <VerticalStackLayout Padding="24" Spacing="16">
+                        <Label
+                                FontSize="Subtitle"
+                                Text="Title" />
+                        <Entry
+                                Placeholder="Enter a sound board title"
+                                Text="{Binding Title, Mode=TwoWay}" />
+                        <Label
+                                FontSize="Subtitle"
+                                Text="Description" />
+                        <Editor
+                                AutoSize="TextChanges"
+                                Placeholder="Describe this sound board"
+                                Text="{Binding Description, Mode=TwoWay}" />
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,24,0,0">
+                                <Button
+                                        Command="{Binding CancelCommand}"
+                                        SemanticProperties.Description="Cancels creating a sound board"
+                                        Text="Cancel" />
+                                <Button
+                                        Grid.Column="1"
+                                        Command="{Binding AddCommand}"
+                                        SemanticProperties.Description="Adds the new sound board"
+                                        Text="Add" />
+                        </Grid>
+                </VerticalStackLayout>
+        </ScrollView>
+</ContentPage>

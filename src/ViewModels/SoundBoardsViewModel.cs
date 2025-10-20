@@ -1,3 +1,5 @@
+using CommunityToolkit.Mvvm.Messaging;
+using SoundHz.Messaging;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -7,10 +9,29 @@ namespace SoundHz.ViewModels;
 /// <summary>
 /// Provides the presentation logic for displaying and persisting sound boards.
 /// </summary>
-public partial class SoundBoardsViewModel(ISoundBoardStorageService storageService, ILogger<SoundBoardsViewModel> logger) : BaseViewModel
+public partial class SoundBoardsViewModel : BaseViewModel, IRecipient<SoundBoardAddedMessage>
 {
-    private readonly ISoundBoardStorageService storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
-    private readonly ILogger<SoundBoardsViewModel> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private const int BrowseTabIndex = 0;
+    private const int AddTabIndex = 1;
+
+    private readonly ISoundBoardStorageService storageService;
+    private readonly ILogger<SoundBoardsViewModel> logger;
+    private readonly IWeakReferenceMessenger messenger;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SoundBoardsViewModel"/> class.
+    /// </summary>
+    /// <param name="storageService">The service that persists sound boards.</param>
+    /// <param name="logger">The logger used to record diagnostic information.</param>
+    /// <param name="messenger">The messenger used to receive notifications from other view models.</param>
+    public SoundBoardsViewModel(ISoundBoardStorageService storageService, ILogger<SoundBoardsViewModel> logger, IWeakReferenceMessenger messenger)
+    {
+        this.storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        this.messenger = messenger ?? throw new ArgumentNullException(nameof(messenger));
+
+        this.messenger.Register<SoundBoardsViewModel, SoundBoardAddedMessage>(this);
+    }
 
     /// <summary>
     /// Gets or sets the collection of sound boards displayed in the user interface.
@@ -23,6 +44,12 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
     /// </summary>
     [ObservableProperty]
     private bool isRefreshing;
+
+    /// <summary>
+    /// Gets or sets the currently selected tab index for the page-level tab bar.
+    /// </summary>
+    [ObservableProperty]
+    private int selectedTabIndex = BrowseTabIndex;
 
     /// <summary>
     /// Called prior to updating the <see cref="Items"/> collection so that change listeners can be detached.
@@ -47,6 +74,19 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
         if (value is not null)
         {
             SubscribeToCollection(value);
+        }
+    }
+
+    /// <summary>
+    /// Handles updates when the <see cref="SelectedTabIndex"/> property changes.
+    /// </summary>
+    /// <param name="value">The updated selected index.</param>
+    partial void OnSelectedTabIndexChanged(int value)
+    {
+        if (value == AddTabIndex)
+        {
+            AddSoundBoardCommand.Execute(null);
+            SelectedTabIndex = BrowseTabIndex;
         }
     }
 
@@ -80,7 +120,16 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
         await Shell.Current.GoToAsync(nameof(SoundBoardsDetailPage), true, new Dictionary<string, object>
         {
             { "Item", soundBoard }
-        });
+        }).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Navigates to the sound board entry page to create a new sound board.
+    /// </summary>
+    [RelayCommand]
+    private async Task AddSoundBoardAsync()
+    {
+        await Shell.Current.GoToAsync(nameof(SoundBoardDetailEntryPage), true).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -103,6 +152,17 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
         {
             IsRefreshing = false;
         }
+    }
+
+    /// <inheritdoc />
+    public void Receive(SoundBoardAddedMessage message)
+    {
+        ArgumentNullException.ThrowIfNull(message);
+
+        Items ??= new ObservableCollection<SoundBoard>();
+        Items.Add(new SoundBoard(message.Value));
+
+        QueuePersistence();
     }
 
     private void SubscribeToCollection(ObservableCollection<SoundBoard> collection)

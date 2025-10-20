@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Storage;
 
 namespace SoundHz;
@@ -27,8 +28,11 @@ public static class MauiProgram
                 builder.Logging.AddDebug();
 #endif
                 builder.Services.AddSingleton<IFileSystem>(_ => FileSystem.Current);
+                builder.Services.AddSingleton<IWeakReferenceMessenger>(_ => WeakReferenceMessenger.Default);
                 builder.Services.AddSingleton<ISoundBoardStorageService, SoundBoardStorageService>();
                 builder.Services.AddTransient<SoundBoardsDetailViewModel>();
+                builder.Services.AddTransient<SoundBoardDetailEntryViewModel>();
+                builder.Services.AddTransient<SoundBoardDetailEntryPage>();
                 builder.Services.AddSingleton<SoundBoardsViewModel>();
                 builder.Services.AddSingleton<AboutViewModel>();
 
