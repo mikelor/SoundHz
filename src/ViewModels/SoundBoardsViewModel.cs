@@ -224,7 +224,7 @@ public partial class SoundBoardsViewModel
             return;
         }
 
-        messenger.Register<SoundBoardAddedMessage>(this, static (recipient, message) => recipient.OnSoundBoardAdded(message));
+        messenger.Register<SoundBoardsViewModel, SoundBoardAddedMessage>(this, static (recipient, message) => recipient.OnSoundBoardAdded(message));
         isMessengerRegistered = true;
     }
 }
