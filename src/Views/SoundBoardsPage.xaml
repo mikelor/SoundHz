@@ -1,43 +1,134 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
         x:Class="SoundHz.Views.SoundBoardsPage"
+        x:Name="SoundBoardsPageView"
         xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
         xmlns:m="clr-namespace:SoundHz.Models"
         xmlns:vm="clr-namespace:SoundHz.ViewModels"
         x:DataType="vm:SoundBoardsViewModel">
-        <RefreshView Command="{Binding RefreshingCommand}" IsRefreshing="{Binding IsRefreshing}">
-                <CollectionView ItemsSource="{Binding Items}">
-                        <CollectionView.ItemTemplate>
-                                <DataTemplate x:DataType="m:SoundBoard">
-                                        <Border
-                                                Margin="4"
-                                                Padding="12"
-                                                BackgroundColor="{AppThemeBinding Light={StaticResource White},
-                                                                                  Dark={StaticResource Black}}"
-                                                SemanticProperties.Description="{Binding Title}"
-                                                StrokeShape="RoundRectangle 8">
-                                                <Border.GestureRecognizers>
-                                                        <TapGestureRecognizer
-                                                                Command="{Binding x:DataType=vm:SoundBoardsViewModel, Source={RelativeSource AncestorType={x:Type vm:SoundBoardsViewModel}}, Path=GoToDetailsCommand}"
-                                                                CommandParameter="{Binding Source={RelativeSource AncestorType={x:Type m:SoundBoard}}, Path=.}" />
-                                                </Border.GestureRecognizers>
-                                                <VerticalStackLayout>
-                                                        <Label
-                                                                FontSize="Large"
-                                                                Text="{Binding Title}"
-                                                                TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                                                    Dark={StaticResource Gray100}}" />
-                                                        <Label
-                                                                FontSize="Small"
-                                                                Text="{Binding Description}"
-                                                                TextColor="{AppThemeBinding Light={StaticResource Gray900},
-                                                                                    Dark={StaticResource Gray200}}"
-                                                                LineBreakMode="WordWrap" />
-                                                </VerticalStackLayout>
-                                        </Border>
-                                </DataTemplate>
+        <Grid>
+                <RefreshView
+                        Command="{Binding RefreshingCommand}"
+                        IsRefreshing="{Binding IsRefreshing}">
+                        <CollectionView ItemsSource="{Binding Items}">
+                                <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="m:SoundBoard">
+                                                <Border
+                                                        Margin="4"
+                                                        Padding="12"
+                                                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
+                                                        SemanticProperties.Description="{Binding Title}"
+                                                        StrokeShape="RoundRectangle 8">
+                                                        
+                                                        <Border.GestureRecognizers>
+                                                                <TapGestureRecognizer
+                                                                        Command="{Binding Source={x:Reference SoundBoardsPageView}, Path=BindingContext.GoToDetailsCommand}"
+                                                                        CommandParameter="{Binding .}" />
+                                                        </Border.GestureRecognizers>
+                                                        <Grid
+                                                                ColumnDefinitions="*,Auto"
+                                                                ColumnSpacing="12"
+                                                                VerticalOptions="Center">
+                                                                <VerticalStackLayout>
+                                                                        <Label
+                                                                                FontSize="Large"
+                                                                                Text="{Binding Title}"
+                                                                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
+                                                                        <Label
+                                                                                FontSize="Small"
+                                                                                Text="{Binding Description}"
+                                                                                TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}"
+                                                                                LineBreakMode="WordWrap" />
+                                                                </VerticalStackLayout>
+                                                                <Grid
+                                                                        Grid.Column="1"
+                                                                        HeightRequest="36"
+                                                                        WidthRequest="36"
+                                                                        HorizontalOptions="End"
+                                                                        VerticalOptions="Center"
+                                                                        SemanticProperties.Description="Open options">
+                                                                        <FlyoutBase.AttachedFlyout>
+                                                                                <MenuFlyout x:Name="ItemOptionsFlyout">
+                                                                                        <MenuFlyoutItem
+                                                                                                Command="{Binding BindingContext.EditCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                                CommandParameter="{Binding .}"
+                                                                                                Text="Edit" />
+                                                                                        <MenuFlyoutItem
+                                                                                                Command="{Binding BindingContext.CopyCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                                CommandParameter="{Binding .}"
+                                                                                                Text="Copy" />
+                                                                                        <MenuFlyoutItem
+                                                                                                Command="{Binding BindingContext.DeleteCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                                CommandParameter="{Binding .}"
+                                                                                                Text="Delete" />
+                                                                                        <MenuFlyoutItem
+                                                                                                Command="{Binding BindingContext.MoveUpCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                                CommandParameter="{Binding .}"
+                                                                                                Text="Move Up" />
+                                                                                        <MenuFlyoutItem
+                                                                                                Command="{Binding BindingContext.MoveDownCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                                CommandParameter="{Binding .}"
+                                                                                                Text="Move Down" />
+                                                                                </MenuFlyout>
+                                                                        </FlyoutBase.AttachedFlyout>
+                                                                        <FlyoutBase.ContextFlyout>
+                                                                                <x:Reference ItemOptionsFlyout />
+                                                                        </FlyoutBase.ContextFlyout>
+                                                                        <Grid.GestureRecognizers>
+                                                                                <TapGestureRecognizer Tapped="OnItemFlyoutTapped" />
+                                                                        </Grid.GestureRecognizers>
+                                                                        <VerticalStackLayout
+                                                                                HorizontalOptions="Center"
+                                                                                VerticalOptions="Center"
+                                                                                Spacing="4">
+                                                                                <BoxView
+                                                                                        HeightRequest="6"
+                                                                                        WidthRequest="6"
+                                                                                        CornerRadius="2"
+                                                                                        HorizontalOptions="Center"
+                                                                                        Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
+                                                                                <BoxView
+                                                                                        HeightRequest="6"
+                                                                                        WidthRequest="6"
+                                                                                        CornerRadius="2"
+                                                                                        HorizontalOptions="Center"
+                                                                                        Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
+                                                                                <BoxView
+                                                                                        HeightRequest="6"
+                                                                                        WidthRequest="6"
+                                                                                        CornerRadius="2"
+                                                                                        HorizontalOptions="Center"
+                                                                                        Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
+                                                                        </VerticalStackLayout>
+                                                                </Grid>
+                                                        </Grid>
+                                                </Border>
+                                        </DataTemplate>
                         </CollectionView.ItemTemplate>
-                </CollectionView>
-        </RefreshView>
+                        </CollectionView>
+                </RefreshView>
+
+                <Border
+                        HeightRequest="56"
+                        WidthRequest="56"
+                        Padding="0"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        Margin="16"
+                        StrokeShape="RoundRectangle 28"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray200}}">
+                        <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ShowAddNewCommand}" />
+                        </Border.GestureRecognizers>
+                        <Grid>
+                                <Label
+                                        Text="+"
+                                        FontSize="24"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center"
+                                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}" />
+                        </Grid>
+                </Border>
+        </Grid>
 </ContentPage>
