@@ -1,9 +1,11 @@
+using System.Collections.Generic;
+
 namespace SoundHz.Views;
 
 /// <summary>
-/// Presents a form for creating a new <see cref="SoundBoard"/> entry.
+/// Presents a form for creating or editing a <see cref="SoundBoard"/> entry.
 /// </summary>
-public partial class SoundBoardDetailEntryPage : ContentPage
+public partial class SoundBoardDetailEntryPage : ContentPage, IQueryAttributable
 {
         private readonly SoundBoardDetailEntryViewModel viewModel;
 
@@ -15,13 +17,19 @@ public partial class SoundBoardDetailEntryPage : ContentPage
         {
                 InitializeComponent();
                 BindingContext = this.viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
+                this.viewModel.PrepareForCreate();
         }
 
         /// <inheritdoc />
-        protected override void OnNavigatedTo(NavigatedToEventArgs args)
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-                base.OnNavigatedTo(args);
-
-                viewModel.Reset();
+                if (query.TryGetValue("Item", out var item) && item is SoundBoard soundBoard)
+                {
+                        viewModel.PrepareForEdit(soundBoard);
+                }
+                else
+                {
+                        viewModel.PrepareForCreate();
+                }
         }
 }

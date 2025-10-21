@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
         x:Class="SoundHz.Views.SoundBoardsPage"
+        x:Name="SoundBoardsPageView"
         xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
         xmlns:m="clr-namespace:SoundHz.Models"
@@ -20,6 +21,30 @@
                                                                                   Dark={StaticResource Black}}"
                                                 SemanticProperties.Description="{Binding Title}"
                                                 StrokeShape="RoundRectangle 8">
+                                                <Border.ContextFlyout>
+                                                        <MenuFlyout>
+                                                                <MenuFlyoutItem
+                                                                        Command="{Binding BindingContext.EditCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                        CommandParameter="{Binding .}"
+                                                                        Text="Edit" />
+                                                                <MenuFlyoutItem
+                                                                        Command="{Binding BindingContext.CopyCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                        CommandParameter="{Binding .}"
+                                                                        Text="Copy" />
+                                                                <MenuFlyoutItem
+                                                                        Command="{Binding BindingContext.DeleteCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                        CommandParameter="{Binding .}"
+                                                                        Text="Delete" />
+                                                                <MenuFlyoutItem
+                                                                        Command="{Binding BindingContext.MoveUpCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                        CommandParameter="{Binding .}"
+                                                                        Text="Move Up" />
+                                                                <MenuFlyoutItem
+                                                                        Command="{Binding BindingContext.MoveDownCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                        CommandParameter="{Binding .}"
+                                                                        Text="Move Down" />
+                                                        </MenuFlyout>
+                                                </Border.ContextFlyout>
                                                 <Border.GestureRecognizers>
                                                         <TapGestureRecognizer
                                                                 Command="{Binding x:DataType=vm:SoundBoardsViewModel, Source={RelativeSource AncestorType={x:Type vm:SoundBoardsViewModel}}, Path=GoToDetailsCommand}"

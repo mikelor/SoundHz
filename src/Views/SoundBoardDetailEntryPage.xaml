@@ -5,7 +5,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
         xmlns:vm="clr-namespace:SoundHz.ViewModels"
         x:DataType="vm:SoundBoardDetailEntryViewModel"
-        Title="Add New SoundBoard">
+        Title="{Binding PageTitle}">
         <ScrollView>
                 <VerticalStackLayout Padding="24" Spacing="16">
                         <VerticalStackLayout Spacing="4">
@@ -40,7 +40,7 @@
                                 <Button
                                         Grid.Column="1"
                                         Command="{Binding AddCommand}"
-                                        Text="Add" />
+                                        Text="{Binding PrimaryActionText}" />
                         </Grid>
                 </VerticalStackLayout>
         </ScrollView>

@@ -6,7 +6,7 @@ using SoundHz.ViewModels.Messages;
 namespace SoundHz.ViewModels;
 
 /// <summary>
-/// Provides presentation logic for capturing new sound board details from the user.
+/// Provides presentation logic for capturing and editing sound board details.
 /// </summary>
 public partial class SoundBoardDetailEntryViewModel
     (ISoundBoardStorageService storageService, IMessenger messenger, ILogger<SoundBoardDetailEntryViewModel> logger) : BaseViewModel
@@ -14,6 +14,7 @@ public partial class SoundBoardDetailEntryViewModel
     private readonly ISoundBoardStorageService storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
     private readonly IMessenger messenger = messenger ?? throw new ArgumentNullException(nameof(messenger));
     private readonly ILogger<SoundBoardDetailEntryViewModel> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private SoundBoard? editingSoundBoard;
 
     /// <summary>
     /// Gets or sets the title for the new sound board.
@@ -29,16 +30,46 @@ public partial class SoundBoardDetailEntryViewModel
     private string description = string.Empty;
 
     /// <summary>
+    /// Gets or sets the title displayed in the page chrome.
+    /// </summary>
+    [ObservableProperty]
+    private string pageTitle = "Add New SoundBoard";
+
+    /// <summary>
+    /// Gets or sets the label for the primary action button.
+    /// </summary>
+    [ObservableProperty]
+    private string primaryActionText = "Add";
+
+    /// <summary>
     /// Resets the entry form to its default state.
     /// </summary>
-    public void Reset()
+    public void PrepareForCreate()
     {
+        editingSoundBoard = null;
         Title = string.Empty;
         Description = string.Empty;
+        PageTitle = "Add New SoundBoard";
+        PrimaryActionText = "Add";
     }
 
     /// <summary>
-    /// Adds a new sound board using the provided form data.
+    /// Initializes the form for editing the provided sound board instance.
+    /// </summary>
+    /// <param name="soundBoard">The sound board being edited.</param>
+    public void PrepareForEdit(SoundBoard soundBoard)
+    {
+        ArgumentNullException.ThrowIfNull(soundBoard);
+
+        editingSoundBoard = soundBoard;
+        Title = soundBoard.Title;
+        Description = soundBoard.Description;
+        PageTitle = "Edit SoundBoard";
+        PrimaryActionText = "Update";
+    }
+
+    /// <summary>
+    /// Adds or updates a sound board using the provided form data.
     /// </summary>
     [RelayCommand(CanExecute = nameof(CanAdd))]
     private async Task AddAsync()
@@ -47,16 +78,24 @@ public partial class SoundBoardDetailEntryViewModel
         {
             var sanitizedTitle = Title.Trim();
             Title = sanitizedTitle;
-            var soundBoard = new SoundBoard(sanitizedTitle, Description);
+            if (editingSoundBoard is null)
+            {
+                var soundBoard = new SoundBoard(sanitizedTitle, Description);
 
-            await storageService.AddSoundBoardAsync(soundBoard);
-            messenger.Send(new SoundBoardAddedMessage(soundBoard));
+                await storageService.AddSoundBoardAsync(soundBoard).ConfigureAwait(false);
+                messenger.Send(new SoundBoardAddedMessage(soundBoard));
+            }
+            else
+            {
+                editingSoundBoard.Title = sanitizedTitle;
+                editingSoundBoard.Description = Description;
+            }
 
             await Shell.Current.GoToAsync("..");
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to add a new sound board.");
+            logger.LogError(ex, editingSoundBoard is null ? "Failed to add a new sound board." : "Failed to update the sound board.");
             throw;
         }
     }

@@ -83,6 +83,111 @@ public partial class SoundBoardsViewModel
     private static async Task ShowAddNewAsync() => await Shell.Current.GoToAsync(nameof(SoundBoardDetailEntryPage));
 
     /// <summary>
+    /// Navigates to the entry page to edit the specified sound board.
+    /// </summary>
+    /// <param name="soundBoard">The sound board to edit.</param>
+    [RelayCommand]
+    private static async Task EditAsync(SoundBoard soundBoard)
+    {
+        ArgumentNullException.ThrowIfNull(soundBoard);
+
+        await Shell.Current.GoToAsync(nameof(SoundBoardDetailEntryPage), true, new Dictionary<string, object>
+        {
+            { "Item", soundBoard }
+        });
+    }
+
+    /// <summary>
+    /// Copies the specified sound board and inserts the duplicate directly after the original.
+    /// </summary>
+    /// <param name="soundBoard">The sound board to duplicate.</param>
+    [RelayCommand]
+    private void Copy(SoundBoard soundBoard)
+    {
+        ArgumentNullException.ThrowIfNull(soundBoard);
+
+        if (Items is null)
+        {
+            return;
+        }
+
+        var index = Items.IndexOf(soundBoard);
+
+        if (index < 0)
+        {
+            return;
+        }
+
+        var copy = new SoundBoard(string.Concat(soundBoard.Title, " (Copy)"), soundBoard.Description);
+        Items.Insert(Math.Min(index + 1, Items.Count), copy);
+    }
+
+    /// <summary>
+    /// Removes the specified sound board from the list.
+    /// </summary>
+    /// <param name="soundBoard">The sound board to delete.</param>
+    [RelayCommand]
+    private void Delete(SoundBoard soundBoard)
+    {
+        ArgumentNullException.ThrowIfNull(soundBoard);
+
+        if (Items is null)
+        {
+            return;
+        }
+
+        _ = Items.Remove(soundBoard);
+    }
+
+    /// <summary>
+    /// Moves the specified sound board one position toward the beginning of the list.
+    /// </summary>
+    /// <param name="soundBoard">The sound board to reposition.</param>
+    [RelayCommand]
+    private void MoveUp(SoundBoard soundBoard)
+    {
+        ArgumentNullException.ThrowIfNull(soundBoard);
+
+        if (Items is null)
+        {
+            return;
+        }
+
+        var index = Items.IndexOf(soundBoard);
+
+        if (index <= 0)
+        {
+            return;
+        }
+
+        Items.Move(index, index - 1);
+    }
+
+    /// <summary>
+    /// Moves the specified sound board one position toward the end of the list.
+    /// </summary>
+    /// <param name="soundBoard">The sound board to reposition.</param>
+    [RelayCommand]
+    private void MoveDown(SoundBoard soundBoard)
+    {
+        ArgumentNullException.ThrowIfNull(soundBoard);
+
+        if (Items is null)
+        {
+            return;
+        }
+
+        var index = Items.IndexOf(soundBoard);
+
+        if (index < 0 || index >= Items.Count - 1)
+        {
+            return;
+        }
+
+        Items.Move(index, index + 1);
+    }
+
+    /// <summary>
     /// Navigates to the detail page for the provided sound board.
     /// </summary>
     /// <param name="soundBoard">The sound board whose details should be displayed.</param>
