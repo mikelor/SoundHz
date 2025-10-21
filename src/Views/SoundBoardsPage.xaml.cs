@@ -62,6 +62,21 @@ public partial class SoundBoardsPage : ContentPage
                 }
         }
 
+        /// <summary>
+        /// Displays the attached options flyout for a sound board list item.
+        /// </summary>
+        /// <param name="sender">The element that triggered the gesture.</param>
+        /// <param name="e">The tap event arguments.</param>
+        private void OnItemFlyoutTapped(object sender, Microsoft.Maui.Controls.TappedEventArgs e)
+        {
+                if (sender is not Microsoft.Maui.Controls.BindableObject bindableObject)
+                {
+                        return;
+                }
+
+                Microsoft.Maui.Controls.FlyoutBase.ShowAttachedFlyout(bindableObject);
+        }
+
         private void CancelPendingLoad()
         {
                 if (loadCancellationTokenSource is null)

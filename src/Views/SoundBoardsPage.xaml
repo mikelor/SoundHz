@@ -20,46 +20,89 @@
                                                         BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
                                                         SemanticProperties.Description="{Binding Title}"
                                                         StrokeShape="RoundRectangle 8">
-                                                        <FlyoutBase.ContextFlyout>
-                                                                <MenuFlyout>
-                                                                        <MenuFlyoutItem
-                                                                                Command="{Binding BindingContext.EditCommand, Source={x:Reference SoundBoardsPageView}}"
-                                                                                CommandParameter="{Binding .}"
-                                                                                Text="Edit" />
-                                                                        <MenuFlyoutItem
-                                                                                Command="{Binding BindingContext.CopyCommand, Source={x:Reference SoundBoardsPageView}}"
-                                                                                CommandParameter="{Binding .}"
-                                                                                Text="Copy" />
-                                                                        <MenuFlyoutItem
-                                                                                Command="{Binding BindingContext.DeleteCommand, Source={x:Reference SoundBoardsPageView}}"
-                                                                                CommandParameter="{Binding .}"
-                                                                                Text="Delete" />
-                                                                        <MenuFlyoutItem
-                                                                                Command="{Binding BindingContext.MoveUpCommand, Source={x:Reference SoundBoardsPageView}}"
-                                                                                CommandParameter="{Binding .}"
-                                                                                Text="Move Up" />
-                                                                        <MenuFlyoutItem
-                                                                                Command="{Binding BindingContext.MoveDownCommand, Source={x:Reference SoundBoardsPageView}}"
-                                                                                CommandParameter="{Binding .}"
-                                                                                Text="Move Down" />
-                                                                </MenuFlyout>
-                                                        </FlyoutBase.ContextFlyout>
+                                                        
                                                         <Border.GestureRecognizers>
                                                                 <TapGestureRecognizer
                                                                         Command="{Binding Source={x:Reference SoundBoardsPageView}, Path=BindingContext.GoToDetailsCommand}"
                                                                         CommandParameter="{Binding .}" />
                                                         </Border.GestureRecognizers>
-                                                        <VerticalStackLayout>
-                                                                <Label
-                                                                        FontSize="Large"
-                                                                        Text="{Binding Title}"
-                                                                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
-                                                                <Label
-                                                                        FontSize="Small"
-                                                                        Text="{Binding Description}"
-                                                                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}"
-                                                                        LineBreakMode="WordWrap" />
-                                                        </VerticalStackLayout>
+                                                        <Grid
+                                                                ColumnDefinitions="*,Auto"
+                                                                ColumnSpacing="12"
+                                                                VerticalOptions="Center">
+                                                                <VerticalStackLayout>
+                                                                        <Label
+                                                                                FontSize="Large"
+                                                                                Text="{Binding Title}"
+                                                                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
+                                                                        <Label
+                                                                                FontSize="Small"
+                                                                                Text="{Binding Description}"
+                                                                                TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}"
+                                                                                LineBreakMode="WordWrap" />
+                                                                </VerticalStackLayout>
+                                                                <Grid
+                                                                        Grid.Column="1"
+                                                                        HeightRequest="36"
+                                                                        WidthRequest="36"
+                                                                        HorizontalOptions="End"
+                                                                        VerticalOptions="Center"
+                                                                        SemanticProperties.Description="Open options">
+                                                                        <FlyoutBase.AttachedFlyout>
+                                                                                <MenuFlyout x:Name="ItemOptionsFlyout">
+                                                                                        <MenuFlyoutItem
+                                                                                                Command="{Binding BindingContext.EditCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                                CommandParameter="{Binding .}"
+                                                                                                Text="Edit" />
+                                                                                        <MenuFlyoutItem
+                                                                                                Command="{Binding BindingContext.CopyCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                                CommandParameter="{Binding .}"
+                                                                                                Text="Copy" />
+                                                                                        <MenuFlyoutItem
+                                                                                                Command="{Binding BindingContext.DeleteCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                                CommandParameter="{Binding .}"
+                                                                                                Text="Delete" />
+                                                                                        <MenuFlyoutItem
+                                                                                                Command="{Binding BindingContext.MoveUpCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                                CommandParameter="{Binding .}"
+                                                                                                Text="Move Up" />
+                                                                                        <MenuFlyoutItem
+                                                                                                Command="{Binding BindingContext.MoveDownCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                                CommandParameter="{Binding .}"
+                                                                                                Text="Move Down" />
+                                                                                </MenuFlyout>
+                                                                        </FlyoutBase.AttachedFlyout>
+                                                                        <FlyoutBase.ContextFlyout>
+                                                                                <x:Reference ItemOptionsFlyout />
+                                                                        </FlyoutBase.ContextFlyout>
+                                                                        <Grid.GestureRecognizers>
+                                                                                <TapGestureRecognizer Tapped="OnItemFlyoutTapped" />
+                                                                        </Grid.GestureRecognizers>
+                                                                        <VerticalStackLayout
+                                                                                HorizontalOptions="Center"
+                                                                                VerticalOptions="Center"
+                                                                                Spacing="4">
+                                                                                <BoxView
+                                                                                        HeightRequest="6"
+                                                                                        WidthRequest="6"
+                                                                                        CornerRadius="2"
+                                                                                        HorizontalOptions="Center"
+                                                                                        Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
+                                                                                <BoxView
+                                                                                        HeightRequest="6"
+                                                                                        WidthRequest="6"
+                                                                                        CornerRadius="2"
+                                                                                        HorizontalOptions="Center"
+                                                                                        Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
+                                                                                <BoxView
+                                                                                        HeightRequest="6"
+                                                                                        WidthRequest="6"
+                                                                                        CornerRadius="2"
+                                                                                        HorizontalOptions="Center"
+                                                                                        Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
+                                                                        </VerticalStackLayout>
+                                                                </Grid>
+                                                        </Grid>
                                                 </Border>
                                         </DataTemplate>
                         </CollectionView.ItemTemplate>
