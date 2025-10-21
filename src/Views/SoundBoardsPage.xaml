@@ -17,54 +17,51 @@
                                                 <Border
                                                         Margin="4"
                                                         Padding="12"
-                                                BackgroundColor="{AppThemeBinding Light={StaticResource White},
-                                                                                  Dark={StaticResource Black}}"
-                                                SemanticProperties.Description="{Binding Title}"
-                                                StrokeShape="RoundRectangle 8">
-                                                <Border.ContextFlyout>
-                                                        <MenuFlyout>
-                                                                <MenuFlyoutItem
-                                                                        Command="{Binding BindingContext.EditCommand, Source={x:Reference SoundBoardsPageView}}"
-                                                                        CommandParameter="{Binding .}"
-                                                                        Text="Edit" />
-                                                                <MenuFlyoutItem
-                                                                        Command="{Binding BindingContext.CopyCommand, Source={x:Reference SoundBoardsPageView}}"
-                                                                        CommandParameter="{Binding .}"
-                                                                        Text="Copy" />
-                                                                <MenuFlyoutItem
-                                                                        Command="{Binding BindingContext.DeleteCommand, Source={x:Reference SoundBoardsPageView}}"
-                                                                        CommandParameter="{Binding .}"
-                                                                        Text="Delete" />
-                                                                <MenuFlyoutItem
-                                                                        Command="{Binding BindingContext.MoveUpCommand, Source={x:Reference SoundBoardsPageView}}"
-                                                                        CommandParameter="{Binding .}"
-                                                                        Text="Move Up" />
-                                                                <MenuFlyoutItem
-                                                                        Command="{Binding BindingContext.MoveDownCommand, Source={x:Reference SoundBoardsPageView}}"
-                                                                        CommandParameter="{Binding .}"
-                                                                        Text="Move Down" />
-                                                        </MenuFlyout>
-                                                </Border.ContextFlyout>
-                                                <Border.GestureRecognizers>
-                                                        <TapGestureRecognizer
-                                                                Command="{Binding x:DataType=vm:SoundBoardsViewModel, Source={RelativeSource AncestorType={x:Type vm:SoundBoardsViewModel}}, Path=GoToDetailsCommand}"
-                                                                CommandParameter="{Binding Source={RelativeSource AncestorType={x:Type m:SoundBoard}}, Path=.}" />
-                                                </Border.GestureRecognizers>
-                                                <VerticalStackLayout>
-                                                        <Label
-                                                                FontSize="Large"
-                                                                Text="{Binding Title}"
-                                                                TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                                                    Dark={StaticResource Gray100}}" />
-                                                        <Label
-                                                                FontSize="Small"
-                                                                Text="{Binding Description}"
-                                                                TextColor="{AppThemeBinding Light={StaticResource Gray900},
-                                                                                    Dark={StaticResource Gray200}}"
-                                                                LineBreakMode="WordWrap" />
-                                                </VerticalStackLayout>
-                                        </Border>
-                                </DataTemplate>
+                                                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
+                                                        SemanticProperties.Description="{Binding Title}"
+                                                        StrokeShape="RoundRectangle 8">
+                                                        <FlyoutBase.ContextFlyout>
+                                                                <MenuFlyout>
+                                                                        <MenuFlyoutItem
+                                                                                Command="{Binding BindingContext.EditCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                CommandParameter="{Binding .}"
+                                                                                Text="Edit" />
+                                                                        <MenuFlyoutItem
+                                                                                Command="{Binding BindingContext.CopyCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                CommandParameter="{Binding .}"
+                                                                                Text="Copy" />
+                                                                        <MenuFlyoutItem
+                                                                                Command="{Binding BindingContext.DeleteCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                CommandParameter="{Binding .}"
+                                                                                Text="Delete" />
+                                                                        <MenuFlyoutItem
+                                                                                Command="{Binding BindingContext.MoveUpCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                CommandParameter="{Binding .}"
+                                                                                Text="Move Up" />
+                                                                        <MenuFlyoutItem
+                                                                                Command="{Binding BindingContext.MoveDownCommand, Source={x:Reference SoundBoardsPageView}}"
+                                                                                CommandParameter="{Binding .}"
+                                                                                Text="Move Down" />
+                                                                </MenuFlyout>
+                                                        </FlyoutBase.ContextFlyout>
+                                                        <Border.GestureRecognizers>
+                                                                <TapGestureRecognizer
+                                                                        Command="{Binding Source={x:Reference SoundBoardsPageView}, Path=BindingContext.GoToDetailsCommand}"
+                                                                        CommandParameter="{Binding .}" />
+                                                        </Border.GestureRecognizers>
+                                                        <VerticalStackLayout>
+                                                                <Label
+                                                                        FontSize="Large"
+                                                                        Text="{Binding Title}"
+                                                                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
+                                                                <Label
+                                                                        FontSize="Small"
+                                                                        Text="{Binding Description}"
+                                                                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}"
+                                                                        LineBreakMode="WordWrap" />
+                                                        </VerticalStackLayout>
+                                                </Border>
+                                        </DataTemplate>
                         </CollectionView.ItemTemplate>
                         </CollectionView>
                 </RefreshView>
