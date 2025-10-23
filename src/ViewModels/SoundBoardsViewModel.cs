@@ -19,6 +19,12 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
     private ObservableCollection<SoundBoard>? items;
 
     /// <summary>
+    /// Gets or sets the sound board that is currently selected in the user interface.
+    /// </summary>
+    [ObservableProperty]
+    private SoundBoard? selectedSoundBoard;
+
+    /// <summary>
     /// Gets or sets a value indicating whether a refresh operation is currently in progress.
     /// </summary>
     [ObservableProperty]
@@ -81,6 +87,21 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
         {
             { "Item", soundBoard }
         });
+    }
+
+    partial void OnSelectedSoundBoardChanged(SoundBoard? value)
+    {
+        if (value is null)
+        {
+            return;
+        }
+
+        if (GoToDetailsCommand.CanExecute(value))
+        {
+            GoToDetailsCommand.Execute(value);
+        }
+
+        SelectedSoundBoard = null;
     }
 
     /// <summary>
