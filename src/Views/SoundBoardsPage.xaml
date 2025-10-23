@@ -7,7 +7,10 @@
         xmlns:vm="clr-namespace:SoundHz.ViewModels"
         x:DataType="vm:SoundBoardsViewModel">
         <RefreshView Command="{Binding RefreshingCommand}" IsRefreshing="{Binding IsRefreshing}">
-                <CollectionView ItemsSource="{Binding Items}">
+                <CollectionView
+                        ItemsSource="{Binding Items}"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedSoundBoard, Mode=TwoWay}">
                         <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="m:SoundBoard">
                                         <Border
@@ -17,11 +20,6 @@
                                                                                   Dark={StaticResource Black}}"
                                                 SemanticProperties.Description="{Binding Title}"
                                                 StrokeShape="RoundRectangle 8">
-                                                <Border.GestureRecognizers>
-                                                        <TapGestureRecognizer
-                                                                Command="{Binding x:DataType=vm:SoundBoardsViewModel, Source={RelativeSource AncestorType={x:Type vm:SoundBoardsViewModel}}, Path=GoToDetailsCommand}"
-                                                                CommandParameter="{Binding Source={RelativeSource AncestorType={x:Type m:SoundBoard}}, Path=.}" />
-                                                </Border.GestureRecognizers>
                                                 <VerticalStackLayout>
                                                         <Label
                                                                 FontSize="Large"
