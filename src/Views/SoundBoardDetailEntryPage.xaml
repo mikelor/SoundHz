@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+        x:Class="SoundHz.Views.SoundBoardDetailEntryPage"
+        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:vm="clr-namespace:SoundHz.ViewModels"
+        x:DataType="vm:SoundBoardDetailEntryViewModel"
+        Title="New Sound Board">
+        <ScrollView>
+                <VerticalStackLayout Padding="24" Spacing="16">
+                        <VerticalStackLayout Spacing="4">
+                                <Label
+                                        Text="Title"
+                                        FontSize="Subtitle"
+                                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
+                                <Entry
+                                        Text="{Binding Title}"
+                                        Placeholder="Enter a descriptive title"
+                                        ClearButtonVisibility="WhileEditing"
+                                        ReturnType="Next" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="4">
+                                <Label
+                                        Text="Description"
+                                        FontSize="Subtitle"
+                                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray100}}" />
+                                <Editor
+                                        Text="{Binding Description}"
+                                        AutoSize="TextChanges"
+                                        Placeholder="Provide a short description" />
+                        </VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="* *" ColumnSpacing="12" Margin="0,24,0,0">
+                                <Button
+                                        Grid.Column="0"
+                                        Text="Cancel"
+                                        Command="{Binding CancelCommand}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Gray100}}"
+                                        SemanticProperties.Description="Cancel adding the sound board" />
+                                <Button
+                                        Grid.Column="1"
+                                        Text="Add"
+                                        Command="{Binding AddCommand}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray900}}"
+                                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray100}}"
+                                        SemanticProperties.Description="Add the new sound board" />
+                        </Grid>
+                </VerticalStackLayout>
+        </ScrollView>
+</ContentPage>

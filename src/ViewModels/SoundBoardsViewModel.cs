@@ -2,15 +2,19 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 
+using SoundHz.Messaging;
+
 namespace SoundHz.ViewModels;
 
 /// <summary>
 /// Provides the presentation logic for displaying and persisting sound boards.
 /// </summary>
-public partial class SoundBoardsViewModel(ISoundBoardStorageService storageService, ILogger<SoundBoardsViewModel> logger) : BaseViewModel
+public partial class SoundBoardsViewModel(ISoundBoardStorageService storageService, ILogger<SoundBoardsViewModel> logger, IWeakReferenceMessenger messenger) : BaseViewModel
 {
     private readonly ISoundBoardStorageService storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
     private readonly ILogger<SoundBoardsViewModel> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly IWeakReferenceMessenger messenger = messenger ?? throw new ArgumentNullException(nameof(messenger));
+    private bool isMessengerRegistered;
 
     /// <summary>
     /// Gets or sets the collection of sound boards displayed in the user interface.
@@ -62,6 +66,8 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
     /// <param name="cancellationToken">The cancellation token used to cancel the operation.</param>
     public async Task LoadDataAsync(CancellationToken cancellationToken = default)
     {
+        EnsureMessengerRegistration();
+
         try
         {
             var soundBoards = await storageService.GetSoundBoardsAsync(cancellationToken).ConfigureAwait(false);
@@ -70,6 +76,25 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to load sound boards from storage.");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Navigates to the page that allows creation of a new sound board entry.
+    /// </summary>
+    [RelayCommand]
+    private async Task CreateSoundBoardAsync()
+    {
+        EnsureMessengerRegistration();
+
+        try
+        {
+            await Shell.Current.GoToAsync(nameof(SoundBoardDetailEntryPage), true).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to navigate to the sound board creation page.");
             throw;
         }
     }
@@ -206,5 +231,28 @@ public partial class SoundBoardsViewModel(ISoundBoardStorageService storageServi
         {
             logger.LogError(ex, "Failed to persist sound board changes.");
         }
+    }
+
+    private void OnSoundBoardAdded(SoundBoard soundBoard)
+    {
+        ArgumentNullException.ThrowIfNull(soundBoard);
+
+        if (Items is null)
+        {
+            Items = new ObservableCollection<SoundBoard>();
+        }
+
+        Items.Add(new SoundBoard(soundBoard));
+    }
+
+    private void EnsureMessengerRegistration()
+    {
+        if (isMessengerRegistered)
+        {
+            return;
+        }
+
+        messenger.Register<SoundBoardsViewModel, SoundBoardAddedMessage>(this, static (recipient, message) => recipient.OnSoundBoardAdded(message.Value));
+        isMessengerRegistered = true;
     }
 }
