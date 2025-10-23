@@ -3,6 +3,7 @@ global using SoundHz.Models;
 global using SoundHz.Services;
 global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
+global using CommunityToolkit.Mvvm.Messaging;
 global using SoundHz.ViewModels;
 global using SoundHz.Views;
 global using System.Collections.ObjectModel;

@@ -6,36 +6,57 @@
         xmlns:m="clr-namespace:SoundHz.Models"
         xmlns:vm="clr-namespace:SoundHz.ViewModels"
         x:DataType="vm:SoundBoardsViewModel">
-        <RefreshView Command="{Binding RefreshingCommand}" IsRefreshing="{Binding IsRefreshing}">
-                <CollectionView
-                        ItemsSource="{Binding Items}"
-                        SelectionMode="Single"
-                        SelectedItem="{Binding SelectedSoundBoard, Mode=TwoWay}">
-                        <CollectionView.ItemTemplate>
-                                <DataTemplate x:DataType="m:SoundBoard">
-                                        <Border
-                                                Margin="4"
-                                                Padding="12"
-                                                BackgroundColor="{AppThemeBinding Light={StaticResource White},
-                                                                                  Dark={StaticResource Black}}"
-                                                SemanticProperties.Description="{Binding Title}"
-                                                StrokeShape="RoundRectangle 8">
-                                                <VerticalStackLayout>
-                                                        <Label
-                                                                FontSize="Large"
-                                                                Text="{Binding Title}"
-                                                                TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                                                    Dark={StaticResource Gray100}}" />
-                                                        <Label
-                                                                FontSize="Small"
-                                                                Text="{Binding Description}"
-                                                                TextColor="{AppThemeBinding Light={StaticResource Gray900},
-                                                                                    Dark={StaticResource Gray200}}"
-                                                                LineBreakMode="WordWrap" />
-                                                </VerticalStackLayout>
-                                        </Border>
-                                </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                </CollectionView>
-        </RefreshView>
+    <Grid>
+            <RefreshView Command="{Binding RefreshingCommand}" IsRefreshing="{Binding IsRefreshing}">
+                    <CollectionView
+                            ItemsSource="{Binding Items}"
+                            SelectionMode="Single"
+                            SelectedItem="{Binding SelectedSoundBoard, Mode=TwoWay}">
+                            <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="m:SoundBoard">
+                                            <Border
+                                                    Margin="4"
+                                                    Padding="12"
+                                                    BackgroundColor="{AppThemeBinding Light={StaticResource White},
+                                                                                      Dark={StaticResource Black}}"
+                                                    SemanticProperties.Description="{Binding Title}"
+                                                    StrokeShape="RoundRectangle 8">
+                                                    <VerticalStackLayout>
+                                                            <Label
+                                                                    FontSize="Large"
+                                                                    Text="{Binding Title}"
+                                                                    TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                                                        Dark={StaticResource Gray100}}" />
+                                                            <Label
+                                                                    FontSize="Small"
+                                                                    Text="{Binding Description}"
+                                                                    TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                                        Dark={StaticResource Gray200}}"
+                                                                    LineBreakMode="WordWrap" />
+                                                    </VerticalStackLayout>
+                                            </Border>
+                                    </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                    </CollectionView>
+            </RefreshView>
+
+            <Button
+                    WidthRequest="64"
+                    HeightRequest="64"
+                    CornerRadius="32"
+                    HorizontalOptions="End"
+                    VerticalOptions="End"
+                    Margin="24"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray700}}"
+                    Command="{Binding CreateSoundBoardCommand}"
+                    SemanticProperties.Hint="Add a new sound board"
+                    Text="+"
+                    TextColor="White"
+                    FontSize="32"
+                    ZIndex="1">
+                    <Button.Shadow>
+                            <Shadow Brush="#66000000" Offset="0,6" Radius="12" />
+                    </Button.Shadow>
+            </Button>
+    </Grid>
 </ContentPage>

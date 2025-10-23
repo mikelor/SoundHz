@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+        x:Class="SoundHz.Views.SoundBoardDetailEntryPage"
+        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:vm="clr-namespace:SoundHz.ViewModels"
+        x:DataType="vm:SoundBoardDetailEntryViewModel"
+        Title="New Sound Board">
+        <ScrollView>
+                <VerticalStackLayout Padding="24" Spacing="16">
+                        <Label
+                                Text="Title"
+                                FontAttributes="Bold"
+                                SemanticProperties.Description="Sound board title label" />
+                        <Entry
+                                Text="{Binding Title, Mode=TwoWay}"
+                                Placeholder="Enter a title"
+                                ReturnType="Next"
+                                SemanticProperties.Hint="Enter the sound board title" />
+                        <Label
+                                Text="Description"
+                                FontAttributes="Bold"
+                                SemanticProperties.Description="Sound board description label" />
+                        <Entry
+                                Text="{Binding Description, Mode=TwoWay}"
+                                Placeholder="Describe the sound board"
+                                ReturnType="Done"
+                                SemanticProperties.Hint="Enter the sound board description" />
+                        <Grid ColumnSpacing="12" RowSpacing="0">
+                                <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Button
+                                        Text="Cancel"
+                                        Command="{Binding CancelCommand}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray100}}"
+                                        Grid.Column="0" />
+                                <Button
+                                        Text="Add"
+                                        Command="{Binding AddCommand}"
+                                        Grid.Column="1"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray600}}"
+                                        TextColor="White" />
+                        </Grid>
+                </VerticalStackLayout>
+        </ScrollView>
+</ContentPage>
