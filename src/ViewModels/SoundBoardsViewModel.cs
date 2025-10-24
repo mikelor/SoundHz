@@ -115,6 +115,77 @@ public partial class SoundBoardsViewModel(
         }
     }
 
+    /// <summary>
+    /// Navigates to the entry page to edit the provided sound board.
+    /// </summary>
+    /// <param name="soundBoard">The sound board to edit.</param>
+    [RelayCommand]
+    private async Task EditSoundBoardAsync(SoundBoard soundBoard)
+    {
+        ArgumentNullException.ThrowIfNull(soundBoard);
+
+        try
+        {
+            await Shell.Current.GoToAsync(nameof(SoundBoardDetailEntryPage), true, new Dictionary<string, object>
+            {
+                { "Item", soundBoard }
+            }).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to navigate to the sound board edit page for '{Title}'.", soundBoard.Title);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Moves the specified sound board one position closer to the beginning of the list.
+    /// </summary>
+    /// <param name="soundBoard">The sound board to move.</param>
+    [RelayCommand]
+    private void MoveSoundBoardUp(SoundBoard soundBoard)
+    {
+        ArgumentNullException.ThrowIfNull(soundBoard);
+
+        if (Items is null)
+        {
+            return;
+        }
+
+        var index = Items.IndexOf(soundBoard);
+
+        if (index <= 0)
+        {
+            return;
+        }
+
+        Items.Move(index, index - 1);
+    }
+
+    /// <summary>
+    /// Moves the specified sound board one position closer to the end of the list.
+    /// </summary>
+    /// <param name="soundBoard">The sound board to move.</param>
+    [RelayCommand]
+    private void MoveSoundBoardDown(SoundBoard soundBoard)
+    {
+        ArgumentNullException.ThrowIfNull(soundBoard);
+
+        if (Items is null)
+        {
+            return;
+        }
+
+        var index = Items.IndexOf(soundBoard);
+
+        if (index < 0 || index >= Items.Count - 1)
+        {
+            return;
+        }
+
+        Items.Move(index, index + 1);
+    }
+
     partial void OnSelectedSoundBoardChanged(SoundBoard? value)
     {
         if (value is null)

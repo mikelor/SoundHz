@@ -5,7 +5,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
         xmlns:m="clr-namespace:SoundHz.Models"
         xmlns:vm="clr-namespace:SoundHz.ViewModels"
-        x:DataType="vm:SoundBoardsViewModel">
+        x:DataType="vm:SoundBoardsViewModel"
+        x:Name="SoundBoardsView">
     <Grid>
             <RefreshView Command="{Binding RefreshingCommand}" IsRefreshing="{Binding IsRefreshing}">
                     <CollectionView
@@ -14,27 +15,52 @@
                             SelectedItem="{Binding SelectedSoundBoard, Mode=TwoWay}">
                             <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="m:SoundBoard">
-                                            <Border
-                                                    Margin="4"
-                                                    Padding="12"
-                                                    BackgroundColor="{AppThemeBinding Light={StaticResource White},
+                                            <SwipeView>
+                                                    <SwipeView.LeftItems>
+                                                            <SwipeItems Mode="Execute">
+                                                                    <SwipeItem
+                                                                            Text="Edit"
+                                                                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                                                                            Command="{Binding Source={x:Reference SoundBoardsView}, Path=BindingContext.EditSoundBoardCommand}"
+                                                                            CommandParameter="{Binding .}" />
+                                                            </SwipeItems>
+                                                    </SwipeView.LeftItems>
+                                                    <SwipeView.RightItems>
+                                                            <SwipeItems Mode="Execute">
+                                                                    <SwipeItem
+                                                                            Text="Move Up"
+                                                                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray600}}"
+                                                                            Command="{Binding Source={x:Reference SoundBoardsView}, Path=BindingContext.MoveSoundBoardUpCommand}"
+                                                                            CommandParameter="{Binding .}" />
+                                                                    <SwipeItem
+                                                                            Text="Move Down"
+                                                                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray800}}"
+                                                                            Command="{Binding Source={x:Reference SoundBoardsView}, Path=BindingContext.MoveSoundBoardDownCommand}"
+                                                                            CommandParameter="{Binding .}" />
+                                                            </SwipeItems>
+                                                    </SwipeView.RightItems>
+                                                    <Border
+                                                            Margin="4"
+                                                            Padding="12"
+                                                            BackgroundColor="{AppThemeBinding Light={StaticResource White},
                                                                                       Dark={StaticResource Black}}"
-                                                    SemanticProperties.Description="{Binding Title}"
-                                                    StrokeShape="RoundRectangle 8">
-                                                    <VerticalStackLayout>
-                                                            <Label
-                                                                    FontSize="Large"
-                                                                    Text="{Binding Title}"
-                                                                    TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                            SemanticProperties.Description="{Binding Title}"
+                                                            StrokeShape="RoundRectangle 8">
+                                                            <VerticalStackLayout>
+                                                                    <Label
+                                                                            FontSize="Large"
+                                                                            Text="{Binding Title}"
+                                                                            TextColor="{AppThemeBinding Light={StaticResource Primary},
                                                                                         Dark={StaticResource Gray100}}" />
-                                                            <Label
-                                                                    FontSize="Small"
-                                                                    Text="{Binding Description}"
-                                                                    TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                    <Label
+                                                                            FontSize="Small"
+                                                                            Text="{Binding Description}"
+                                                                            TextColor="{AppThemeBinding Light={StaticResource Gray900},
                                                                                         Dark={StaticResource Gray200}}"
-                                                                    LineBreakMode="WordWrap" />
-                                                    </VerticalStackLayout>
-                                            </Border>
+                                                                            LineBreakMode="WordWrap" />
+                                                            </VerticalStackLayout>
+                                                    </Border>
+                                            </SwipeView>
                                     </DataTemplate>
                             </CollectionView.ItemTemplate>
                     </CollectionView>

@@ -4,8 +4,9 @@ using SoundHz.Messages;
 namespace SoundHz.ViewModels;
 
 /// <summary>
-/// Provides the presentation logic for creating a new <see cref="SoundBoard"/> instance.
+/// Provides the presentation logic for creating or editing a <see cref="SoundBoard"/> instance.
 /// </summary>
+[QueryProperty(nameof(Item), "Item")]
 public partial class SoundBoardDetailEntryViewModel(
         ISoundBoardStorageService storageService,
         ILogger<SoundBoardDetailEntryViewModel> logger,
@@ -19,36 +20,80 @@ public partial class SoundBoardDetailEntryViewModel(
         /// Gets or sets the title for the new sound board.
         /// </summary>
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(AddCommand))]
+        [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
         private string title = string.Empty;
 
         /// <summary>
         /// Gets or sets the description for the new sound board.
         /// </summary>
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(AddCommand))]
+        [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
         private string description = string.Empty;
 
         /// <summary>
-        /// Adds the configured sound board to storage and notifies subscribers of the addition.
+        /// Gets or sets the sound board being edited when in edit mode.
         /// </summary>
-        [RelayCommand(CanExecute = nameof(CanAddSoundBoard))]
-        private async Task AddAsync()
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsInEditMode))]
+        [NotifyPropertyChangedFor(nameof(SubmitButtonText))]
+        [NotifyPropertyChangedFor(nameof(PageTitle))]
+        [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
+        private SoundBoard? item;
+
+        /// <summary>
+        /// Gets the text displayed on the submit button.
+        /// </summary>
+        public string SubmitButtonText => IsInEditMode ? "Update" : "Add";
+
+        /// <summary>
+        /// Gets the title displayed on the page.
+        /// </summary>
+        public string PageTitle => IsInEditMode ? "Edit Sound Board" : "New Sound Board";
+
+        /// <summary>
+        /// Gets a value indicating whether the view model is editing an existing sound board.
+        /// </summary>
+        public bool IsInEditMode => Item is not null;
+
+        /// <summary>
+        /// Adds or updates the configured sound board and persists the changes.
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(CanSubmit))]
+        private async Task SubmitAsync()
         {
                 var trimmedTitle = (Title ?? string.Empty).Trim();
                 var trimmedDescription = (Description ?? string.Empty).Trim();
-                var soundBoard = new SoundBoard(trimmedTitle, trimmedDescription);
 
-                try
+                if (IsInEditMode)
                 {
-                        await soundBoardStorageService.AddSoundBoardAsync(soundBoard).ConfigureAwait(false);
-                        messageBus.Send(new SoundBoardAddedMessage(new SoundBoard(soundBoard)));
-                        await MainThread.InvokeOnMainThreadAsync(() => Shell.Current.GoToAsync(".."));
+                        try
+                        {
+                                ArgumentNullException.ThrowIfNull(Item);
+                                Item.Title = trimmedTitle;
+                                Item.Description = trimmedDescription;
+                                await MainThread.InvokeOnMainThreadAsync(() => Shell.Current.GoToAsync(".."));
+                        }
+                        catch (Exception ex)
+                        {
+                                logger.LogError(ex, "Failed to update sound board '{Title}'.", trimmedTitle);
+                                throw;
+                        }
                 }
-                catch (Exception ex)
+                else
                 {
-                        logger.LogError(ex, "Failed to add a new sound board.");
-                        throw;
+                        var soundBoard = new SoundBoard(trimmedTitle, trimmedDescription);
+
+                        try
+                        {
+                                await soundBoardStorageService.AddSoundBoardAsync(soundBoard).ConfigureAwait(false);
+                                messageBus.Send(new SoundBoardAddedMessage(new SoundBoard(soundBoard)));
+                                await MainThread.InvokeOnMainThreadAsync(() => Shell.Current.GoToAsync(".."));
+                        }
+                        catch (Exception ex)
+                        {
+                                logger.LogError(ex, "Failed to add a new sound board.");
+                                throw;
+                        }
                 }
         }
 
@@ -61,5 +106,16 @@ public partial class SoundBoardDetailEntryViewModel(
                 return MainThread.InvokeOnMainThreadAsync(() => Shell.Current.GoToAsync(".."));
         }
 
-        private bool CanAddSoundBoard() => !string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(Description);
+        private bool CanSubmit() => !string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(Description);
+
+        partial void OnItemChanged(SoundBoard? value)
+        {
+                if (value is null)
+                {
+                        return;
+                }
+
+                Title = value.Title;
+                Description = value.Description;
+        }
 }
